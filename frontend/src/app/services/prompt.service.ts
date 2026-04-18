@@ -16,6 +16,7 @@ export interface Prompt {
   created_at?: string;
   view_count?: number;
   tags?: Tag[];
+  author_id?: number;
 }
 
 @Injectable({
@@ -37,6 +38,14 @@ export class PromptService {
 
   addPrompt(prompt: any): Observable<Prompt> {
     return this.http.post<Prompt>(this.apiUrl, prompt);
+  }
+
+  updatePrompt(id: number, prompt: any): Observable<Prompt> {
+    return this.http.put<Prompt>(`${this.apiUrl}${id}/`, prompt);
+  }
+
+  deletePrompt(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}${id}/`);
   }
 
   getTags(): Observable<Tag[]> {

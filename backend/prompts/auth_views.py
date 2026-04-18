@@ -43,6 +43,7 @@ def login_view(request):
             return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
+@csrf_exempt
 def logout_view(request):
     logout(request)
     return JsonResponse({"message": "Logged out"})

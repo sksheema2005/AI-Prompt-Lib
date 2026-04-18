@@ -25,6 +25,7 @@ export const routes: Routes = [
   { path: 'prompts', component: PromptListComponent },
   { path: 'prompts/:id', component: PromptDetailComponent },
   { path: 'add-prompt', component: AddPromptComponent, canActivate: [authGuard] },
+  { path: 'edit-prompt/:id', component: AddPromptComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'how-to-use', component: HowToUseComponent },

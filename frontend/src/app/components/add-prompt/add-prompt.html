@@ -1,7 +1,7 @@
 <div class="container">
   <a routerLink="/prompts" class="btn-back">← Back to List</a>
   <div class="form-card">
-    <h2>Create New Prompt</h2>
+    <h2>{{ editId ? 'Edit Prompt' : 'Create New Prompt' }}</h2>
     <form [formGroup]="promptForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="title">Title</label>

@@ -44,7 +44,7 @@ def prompt_list(request):
 
             if errors: return JsonResponse({"errors": errors}, status=400)
 
-            prompt = Prompt.objects.create(title=title, content=content, complexity=complexity)
+            prompt = Prompt.objects.create(title=title, content=content, complexity=complexity, author=request.user)
             
             # Handle tags
             for name in tag_names:
@@ -57,6 +57,7 @@ def prompt_list(request):
 
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
+@csrf_exempt
 def prompt_detail(request, pk):
     if request.method == "GET":
         try:
@@ -79,10 +80,50 @@ def prompt_detail(request, pk):
                 "complexity": prompt.complexity,
                 "created_at": prompt.created_at,
                 "view_count": current_views,
+                "author_id": prompt.author_id,
                 "tags": list(prompt.tags.values("id", "name", "color"))
             })
         except Prompt.DoesNotExist:
             return JsonResponse({"error": "Not found"}, status=404)
+            
+    elif request.method == "PUT":
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Authentication required"}, status=401)
+        try:
+            prompt = Prompt.objects.get(pk=pk)
+            if prompt.author_id and prompt.author_id != request.user.id:
+                return JsonResponse({"error": "Forbidden"}, status=403)
+            data = json.loads(request.body)
+            prompt.title = data.get("title", prompt.title)
+            prompt.content = data.get("content", prompt.content)
+            prompt.complexity = data.get("complexity", prompt.complexity)
+            prompt.save()
+            
+            tag_names = data.get("tags")
+            if tag_names is not None:
+                prompt.tags.clear()
+                for name in tag_names:
+                    tag, _ = Tag.objects.get_or_create(name=name.strip())
+                    prompt.tags.add(tag)
+                    
+            return JsonResponse({"message": "Updated successfully"})
+        except Prompt.DoesNotExist:
+            return JsonResponse({"error": "Not found"}, status=404)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    elif request.method == "DELETE":
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Authentication required"}, status=401)
+        try:
+            prompt = Prompt.objects.get(pk=pk)
+            if prompt.author_id and prompt.author_id != request.user.id:
+                return JsonResponse({"error": "Forbidden"}, status=403)
+            prompt.delete()
+            return JsonResponse({"message": "Deleted successfully"})
+        except Prompt.DoesNotExist:
+            return JsonResponse({"error": "Not found"}, status=404)
+
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def tag_list(request):

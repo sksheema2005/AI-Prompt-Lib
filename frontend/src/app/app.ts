@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { ThemeService } from './services/theme.service';
@@ -14,9 +14,14 @@ import { ThemeService } from './services/theme.service';
 export class App {
   authService = inject(AuthService);
   themeService = inject(ThemeService);
+  router = inject(Router);
 
   logout(): void {
-    this.authService.logout().subscribe();
+    this.authService.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/prompts']);
+      }
+    });
   }
 
   toggleTheme(): void {

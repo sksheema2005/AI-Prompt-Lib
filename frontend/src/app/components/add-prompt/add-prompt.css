@@ -25,7 +25,7 @@ label {
   display: block;
   margin-bottom: 0.75rem;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--text-color);
   font-size: 1rem;
 }
 
@@ -35,14 +35,14 @@ input, select, textarea {
   background: var(--input-bg);
   border: 1px solid var(--card-border);
   border-radius: 12px;
-  color: var(--text-main);
+  color: var(--text-color);
   font-size: 1rem;
   transition: var(--transition);
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
@@ -67,7 +67,7 @@ textarea {
 .btn-submit {
   width: 100%;
   padding: 1.25rem;
-  background: var(--primary);
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 12px;
@@ -78,7 +78,7 @@ textarea {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: var(--primary-color);
   transform: translateY(-3px);
   box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
 }

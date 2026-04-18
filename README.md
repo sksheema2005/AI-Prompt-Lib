@@ -33,6 +33,10 @@ A professional, high-performance platform for managing and tracking AI prompts. 
 - Categorize prompts with dynamic, color-coded tags.
 - Support for multi-tag filtering and dynamic creation during prompt submission.
 
+### 4. Create, Edit, & Delete (Full CRUD)
+- Fully featured prompt management system allowing you to update typos and modify metadata seamlessly.
+- **Ownership Verification**: Protected edit and delete routes guarantee that only the original author of the prompt can modify or destroy it.
+
 ---
 
 ## 🚀 Getting Started
