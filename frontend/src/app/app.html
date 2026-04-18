@@ -1,0 +1,38 @@
+<div class="app-layout">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a routerLink="/" class="nav-brand">
+        <span class="brand-icon">✨</span>
+        <span class="brand-text">PromptLib</span>
+      </a>
+      <div class="nav-links">
+        <a routerLink="/prompts" routerLinkActive="active" class="nav-item">Explore</a>
+        <a routerLink="/add-prompt" routerLinkActive="active" class="nav-item">Create</a>
+        
+        <div class="nav-divider"></div>
+
+        <a routerLink="/how-to-use" class="btn-theme-toggle" style="text-decoration: none;" title="How to Use">
+          ℹ️
+        </a>
+        <button (click)="toggleTheme()" class="btn-theme-toggle" [title]="themeService.isDarkMode() ? 'Switch to Bright Mode' : 'Switch to Dark Mode'">
+          {{ themeService.isDarkMode() ? '☀️' : '🌙' }}
+        </button>
+
+        <div class="nav-divider"></div>
+
+        <ng-container *ngIf="authService.currentUser() as user; else loginLink">
+          <span class="user-greeting">Hi, {{ user.username }}</span>
+          <button (click)="logout()" class="btn-logout">Logout</button>
+        </ng-container>
+        
+        <ng-template #loginLink>
+          <a routerLink="/login" class="btn-login-nav">Login</a>
+        </ng-template>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

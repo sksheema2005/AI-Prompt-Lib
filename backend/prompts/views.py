@@ -1,0 +1,92 @@
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
+from .models import Prompt, Tag
+
+@csrf_exempt
+def prompt_list(request):
+    if request.method == "GET":
+        prompts = Prompt.objects.all().order_by('-created_at')
+        data = []
+        for p in prompts:
+            cache_key = f"prompt:{p.id}:views"
+            v_count = cache.get(cache_key) or p.view_count
+            
+            data.append({
+                "id": p.id,
+                "title": p.title,
+                "content": p.content,
+                "complexity": p.complexity,
+                "created_at": p.created_at,
+                "view_count": v_count,
+                "tags": list(p.tags.values("id", "name", "color"))
+            })
+        return JsonResponse(data, safe=False)
+
+    elif request.method == "POST":
+        if not request.user.is_authenticated:
+            return JsonResponse({"error": "Authentication required"}, status=401)
+        try:
+            data = json.loads(request.body)
+            title = data.get("title")
+            content = data.get("content")
+            complexity = data.get("complexity")
+            tag_names = data.get("tags", []) # Expecting list of strings
+
+            errors = {}
+            if not title or len(title) < 3: errors["title"] = "Title too short."
+            if not content or len(content) < 20: errors["content"] = "Content must be at least 20 characters."
+            try:
+                complexity = int(complexity)
+                if not (1 <= complexity <= 10): errors["complexity"] = "Range 1-10."
+            except: errors["complexity"] = "Must be integer."
+
+            if errors: return JsonResponse({"errors": errors}, status=400)
+
+            prompt = Prompt.objects.create(title=title, content=content, complexity=complexity)
+            
+            # Handle tags
+            for name in tag_names:
+                tag, _ = Tag.objects.get_or_create(name=name.strip())
+                prompt.tags.add(tag)
+
+            return JsonResponse({"id": prompt.id, "title": prompt.title}, status=201)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+def prompt_detail(request, pk):
+    if request.method == "GET":
+        try:
+            prompt = Prompt.objects.get(pk=pk)
+            cache_key = f"prompt:{prompt.id}:views"
+            
+            try:
+                if cache.get(cache_key) is None:
+                    cache.set(cache_key, prompt.view_count, timeout=None)
+                current_views = cache.incr(cache_key)
+            except Exception:
+                current_views = prompt.view_count + 1
+                prompt.view_count = current_views
+                prompt.save()
+
+            return JsonResponse({
+                "id": prompt.id,
+                "title": prompt.title,
+                "content": prompt.content,
+                "complexity": prompt.complexity,
+                "created_at": prompt.created_at,
+                "view_count": current_views,
+                "tags": list(prompt.tags.values("id", "name", "color"))
+            })
+        except Prompt.DoesNotExist:
+            return JsonResponse({"error": "Not found"}, status=404)
+    return JsonResponse({"error": "Method not allowed"}, status=405)
+
+def tag_list(request):
+    if request.method == "GET":
+        tags = list(Tag.objects.all().values("id", "name", "color"))
+        return JsonResponse(tags, safe=False)
+    return JsonResponse({"error": "Method not allowed"}, status=405)

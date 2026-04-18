@@ -1,0 +1,23 @@
+<div class="container" *ngIf="prompt()">
+  <a routerLink="/prompts" class="btn-back">← Back to List</a>
+  <div class="detail-card">
+    <div class="detail-header">
+      <h2>{{ prompt()?.title }}</h2>
+      <span class="badge" [ngClass]="'complexity-' + prompt()?.complexity">Complexity: Level {{ prompt()?.complexity }}</span>
+    </div>
+
+    <div class="tags-row" *ngIf="prompt()?.tags && (prompt()?.tags?.length || 0) > 0">
+      <span *ngFor="let tag of prompt()?.tags" class="tag-pill" [style.background-color]="tag.color">
+        {{ tag.name }}
+      </span>
+    </div>
+
+    <div class="metadata">
+      <span>Views: {{ prompt()?.view_count }}</span>
+      <span>Created: {{ prompt()?.created_at | date:'medium' }}</span>
+    </div>
+    <div class="content">
+      <p>{{ prompt()?.content }}</p>
+    </div>
+  </div>
+</div>

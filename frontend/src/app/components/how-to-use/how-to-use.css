@@ -1,0 +1,119 @@
+.howto-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h2 {
+  font-size: 2.8rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  color: var(--text-color);
+  font-weight: 800;
+}
+
+.steps-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.step-card {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background: var(--card-bg);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+}
+
+.step-card.reverse {
+  flex-direction: row-reverse;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--primary-color);
+  color: white;
+  font-weight: 800;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.step-content h3 {
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+}
+
+.step-content p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.step-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--input-bg);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.step-image img {
+  width: 100%;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.theme-icons {
+  font-size: 4rem;
+  padding: 4rem;
+  gap: 1rem;
+}
+
+.actions {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.btn-start {
+  display: inline-block;
+  background: var(--primary-color);
+  color: white;
+  padding: 1.2rem 3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+}
+
+.btn-start:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+}
+
+@media (max-width: 768px) {
+  .step-card, .step-card.reverse {
+    flex-direction: column;
+    text-align: center;
+  }
+}

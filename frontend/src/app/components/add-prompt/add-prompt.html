@@ -1,0 +1,43 @@
+<div class="container">
+  <a routerLink="/prompts" class="btn-back">← Back to List</a>
+  <div class="form-card">
+    <h2>Create New Prompt</h2>
+    <form [formGroup]="promptForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" formControlName="title" placeholder="Enter a descriptive title">
+        <div *ngIf="promptForm.get('title')?.invalid && (promptForm.get('title')?.dirty || promptForm.get('title')?.touched)" class="error">
+          <span *ngIf="promptForm.get('title')?.errors?.['required']">Title is required.</span>
+          <span *ngIf="promptForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters.</span>
+        </div>
+      </div>
+
+      <div class="flex-row">
+        <div class="form-group flex-1">
+          <label for="complexity">Complexity (1 - 10)</label>
+          <select id="complexity" formControlName="complexity">
+            <option *ngFor="let level of complexityLevels" [value]="level">Level {{ level }}</option>
+          </select>
+        </div>
+
+        <div class="form-group flex-2">
+          <label for="tagsString">Tags (Comma separated)</label>
+          <input type="text" id="tagsString" formControlName="tagsString" placeholder="e.g. Anime, Sci-Fi, Coding">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="content">Prompt Content</label>
+        <textarea id="content" formControlName="content" rows="10" placeholder="Paste your AI prompt here (min 20 characters)..."></textarea>
+        <div *ngIf="promptForm.get('content')?.invalid && (promptForm.get('content')?.dirty || promptForm.get('content')?.touched)" class="error">
+          <span *ngIf="promptForm.get('content')?.errors?.['required']">Content is required.</span>
+          <span *ngIf="promptForm.get('content')?.errors?.['minlength']">Content must be at least 20 characters.</span>
+        </div>
+      </div>
+      
+      <button type="submit" [disabled]="promptForm.invalid" class="btn-submit">
+        Save Prompt
+      </button>
+    </form>
+  </div>
+</div>

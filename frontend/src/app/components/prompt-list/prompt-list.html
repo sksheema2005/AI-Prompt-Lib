@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="header-actions">
+    <h2>AI Prompt Library</h2>
+    <a routerLink="/add-prompt" class="btn-add">Add New Prompt</a>
+  </div>
+  
+  <div class="prompt-grid">
+    <div *ngFor="let prompt of prompts()" class="prompt-card" [routerLink]="['/prompts', prompt.id]">
+      <div class="card-header">
+        <h3>{{ prompt.title }}</h3>
+        <span class="badge" [ngClass]="'complexity-' + prompt.complexity">Lvl {{ prompt.complexity }}</span>
+      </div>
+      
+      <div class="tags-row" *ngIf="prompt.tags && prompt.tags.length > 0">
+        <span *ngFor="let tag of prompt.tags" class="tag-pill" [style.background-color]="tag.color">
+          {{ tag.name }}
+        </span>
+      </div>
+
+      <p>{{ prompt.content | slice:0:100 }}{{ prompt.content.length > 100 ? '...' : '' }}</p>
+      
+      <div class="stats">
+        <span>Views: {{ prompt.view_count || 0 }}</span>
+        <span>{{ prompt.created_at | date }}</span>
+      </div>
+    </div>
+  </div>
+</div>
