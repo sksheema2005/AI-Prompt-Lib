@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, delay, tap } from 'rxjs';
 
 export interface User {
   id: number;
@@ -12,11 +12,6 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private loginUrl = '/api/login/';
-  private logoutUrl = '/api/logout/';
-  private signupUrl = '/api/signup/';
-  private userUrl = '/api/user/';
-
   // Global user state
   currentUser = signal<User | null>(null);
 
@@ -25,38 +20,48 @@ export class AuthService {
   }
 
   login(credentials: any): Observable<any> {
-    return this.http.post<any>(this.loginUrl, credentials).pipe(
+    const mockUser = { id: 1, username: credentials.username || 'DemoUser', authenticated: true };
+    return of(mockUser).pipe(
+      delay(500),
       tap(user => {
-        this.currentUser.set({ ...user, authenticated: true });
+        this.currentUser.set(user);
+        localStorage.setItem('mock_user', JSON.stringify(user));
       })
     );
   }
 
   signup(credentials: any): Observable<any> {
-    return this.http.post<any>(this.signupUrl, credentials).pipe(
+    const mockUser = { id: 1, username: credentials.username || 'DemoUser', authenticated: true };
+    return of(mockUser).pipe(
+      delay(500),
       tap(user => {
-        this.currentUser.set({ ...user, authenticated: true });
+        this.currentUser.set(user);
+        localStorage.setItem('mock_user', JSON.stringify(user));
       })
     );
   }
 
   logout(): Observable<any> {
-    return this.http.post<any>(this.logoutUrl, {}).pipe(
+    return of({ success: true }).pipe(
+      delay(200),
       tap(() => {
         this.currentUser.set(null);
+        localStorage.removeItem('mock_user');
       })
     );
   }
 
   checkAuth(): Observable<User> {
-    return this.http.get<User>(this.userUrl).pipe(
-      tap(user => {
-        if (user.authenticated) {
-          this.currentUser.set(user);
-        } else {
-          this.currentUser.set(null);
-        }
-      })
-    );
+    const savedUser = localStorage.getItem('mock_user');
+    let user: User = { id: 0, username: '', authenticated: false };
+    
+    if (savedUser) {
+      user = JSON.parse(savedUser);
+      this.currentUser.set(user);
+    } else {
+      this.currentUser.set(null);
+    }
+    
+    return of(user);
   }
 }
